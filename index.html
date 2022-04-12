@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>HTML inputs and show picker</title>
+</head>
+<body>
+	<style type="text/css">
+		div {
+		  padding: 8px;
+		}
+	</style>
+	<script type="text/javascript">
+		let pairs = [
+			  ['colorbtn', 'color'],
+			  ['datebtn', 'date'],
+			  ['datetimebtn', 'datetime'],
+			  ['filebtn', 'file'],
+			  ['monthbtn', 'month'],
+			  ['timebtn', 'time'],
+			  ['weekbtn', 'week'],
+		];
+		for (let [btnId, inputId] of pairs) {
+		  const btn = document.getElementById(btnId);
+			btn.addEventListener('click', () => {
+		     console.log('Looking for ', inputId);
+		     let input = document.getElementById(inputId);
+		     try {
+		       console.log(input);
+		       input.showPicker();
+		     } catch (e) {
+		        alert(e);
+		     }
+		  });
+		}
+	</script>
+	<div>
+	  <input id='colorbtn' type="button" value="Color" />
+	  <input id='color' type='color' />
+	</div>
+
+	<div>
+	  <input id='datebtn' type="button" value="Date" />
+	  <input id='date' type='date' />
+	</div>
+
+	<div>
+	  <input id='datetimebtn' type="button" value="Date&time" />
+	  <input id='datetime' type='datetime-local' />
+	</div>
+
+	<div>
+	  <input id='monthbtn' type="button" value="Month" />
+	  <input id='month' type='week' />
+	</div>
+
+	<div>
+	  <input id='weekbtn' type="button" value="Week" />
+	  <input id='week' type='week' />
+	</div>
+
+	<div>
+	  <input id='timebtn' type="button" value="Time" />
+	  <input id='time' type='time' />
+	</div>
+
+
+	<div>
+	  <input id='filebtn' type="button" value="File" />
+	  <input id='file' type='file' />
+	</div>
+</body>
+</html>
