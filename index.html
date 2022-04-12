@@ -4,37 +4,9 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>HTML inputs and show picker</title>
+	<link rel="stylesheet" href="main.css">
 </head>
 <body>
-	<style type="text/css">
-		div {
-		  padding: 8px;
-		}
-	</style>
-	<script type="text/javascript">
-		let pairs = [
-			  ['colorbtn', 'color'],
-			  ['datebtn', 'date'],
-			  ['datetimebtn', 'datetime'],
-			  ['filebtn', 'file'],
-			  ['monthbtn', 'month'],
-			  ['timebtn', 'time'],
-			  ['weekbtn', 'week'],
-		];
-		for (let [btnId, inputId] of pairs) {
-		  const btn = document.getElementById(btnId);
-			btn.addEventListener('click', () => {
-		     console.log('Looking for ', inputId);
-		     let input = document.getElementById(inputId);
-		     try {
-		       console.log(input);
-		       input.showPicker();
-		     } catch (e) {
-		        alert(e);
-		     }
-		  });
-		}
-	</script>
 	<div>
 	  <input id='colorbtn' type="button" value="Color" />
 	  <input id='color' type='color' />
@@ -65,10 +37,11 @@
 	  <input id='time' type='time' />
 	</div>
 
-
 	<div>
 	  <input id='filebtn' type="button" value="File" />
 	  <input id='file' type='file' />
 	</div>
+
+	<script type="text/javascript" src="main.js"></script>
 </body>
 </html>
