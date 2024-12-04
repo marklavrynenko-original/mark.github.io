@@ -1,13 +1,17 @@
 const container = document.getElementById('container');
-const WIDTH = 28, HEIGHT = 17;
-let pixelWidth = Math.floor(window.innerWidth / WIDTH);
-let pixelHeight = Math.floor(window.innerHeight / HEIGHT);
-console.log(pixelWidth, pixelHeight);
+const PIXEL_SIZE = 48;
+const WIDTH = Math.floor(window.innerWidth / PIXEL_SIZE);
+const HEIGHT = Math.floor(window.innerHeight / PIXEL_SIZE);
+console.log(WIDTH, HEIGHT);
 let algo = 0;
 
-function getLineSide(row, column) {
-    const D = window.innerWidth * row - window.innerHeight * column;
-    // console.log(row, column, D);
+function getLineSide(y, x) {
+    const D = window.innerWidth * y - window.innerHeight * x;
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    dot.style.left = x + 'px';
+    dot.style.top = y + 'px';
+    container.appendChild(dot);
     return D >= 0
 }
 
@@ -30,42 +34,54 @@ function render() {
     for (let i = 0; i < HEIGHT; ++i) {
         const row = document.createElement('div');
         row.className = 'row';
-        row.style.height = pixelHeight + 'px';
+        row.style.height = PIXEL_SIZE + 'px';
         for (let j = 0; j < WIDTH; ++j) {
             const cell = document.createElement('div');
             cell.className = 'cell'
             // cell.textContent = `(${i}, ${j})`;
             let color;
             if (algo == 0) {
-                color = getLineSide(i * pixelHeight + pixelHeight * 0.5, j * pixelWidth + pixelWidth * 0.5) ? 'yellow' : 'blue';
+                // no AA
+                color = getLineSide(i * PIXEL_SIZE + PIXEL_SIZE * 0.5, j * PIXEL_SIZE + PIXEL_SIZE * 0.5) ? 'yellow' : 'blue';
             } else if (algo == 1) {
-                const side1 = getLineSide(i * pixelHeight + pixelHeight * 0.25, j * pixelWidth + pixelWidth * 0.25);
-                const side2 = getLineSide(i * pixelHeight + pixelHeight * 0.25, j * pixelWidth + pixelWidth * 0.75);
-                const side3 = getLineSide(i * pixelHeight + pixelHeight * 0.75, j * pixelWidth + pixelWidth * 0.25);
-                const side4 = getLineSide(i * pixelHeight + pixelHeight * 0.75, j * pixelWidth + pixelWidth * 0.75);
+                // 4x SSAA
+                const side1 = getLineSide(i * PIXEL_SIZE + PIXEL_SIZE * 0.25, j * PIXEL_SIZE + PIXEL_SIZE * 0.25);
+                const side2 = getLineSide(i * PIXEL_SIZE + PIXEL_SIZE * 0.25, j * PIXEL_SIZE + PIXEL_SIZE * 0.75);
+                const side3 = getLineSide(i * PIXEL_SIZE + PIXEL_SIZE * 0.75, j * PIXEL_SIZE + PIXEL_SIZE * 0.25);
+                const side4 = getLineSide(i * PIXEL_SIZE + PIXEL_SIZE * 0.75, j * PIXEL_SIZE + PIXEL_SIZE * 0.75);
                 color = getPixelColor([side1, side2, side3, side4], 'yellow', 'blue');
-            } else {
+            } else if (algo == 2) {
+                // r random points
                 const sides = [];
                 for (let k = 0; k < 5; k++) {
                     sides.push(
-                        getLineSide(i * pixelHeight + pixelHeight * Math.random(), j * pixelWidth + pixelWidth * Math.random())
+                        getLineSide(i * PIXEL_SIZE + PIXEL_SIZE * Math.random(), j * PIXEL_SIZE + PIXEL_SIZE * Math.random())
                     );
                 }
                 color = getPixelColor(sides, 'yellow', 'blue');
+            } else {
+                // 4 corners + center
+                const side1 = getLineSide(i * PIXEL_SIZE, j * PIXEL_SIZE);
+                const side2 = getLineSide(i * PIXEL_SIZE, j * PIXEL_SIZE + PIXEL_SIZE);
+                const side3 = getLineSide(i * PIXEL_SIZE + PIXEL_SIZE, j * PIXEL_SIZE);
+                const side4 = getLineSide(i * PIXEL_SIZE + PIXEL_SIZE, j * PIXEL_SIZE + PIXEL_SIZE);
+                const side5 = getLineSide(i * PIXEL_SIZE + PIXEL_SIZE * 0.5, j * PIXEL_SIZE + PIXEL_SIZE * 0.5);
+                color = getPixelColor([side1, side2, side3, side4, side5], 'yellow', 'blue');
             }
             
             cell.style.backgroundColor = color;
-            cell.style.height = pixelHeight + 'px';
-            cell.style.width = pixelWidth + 'px';
+            cell.style.height = PIXEL_SIZE + 'px';
+            cell.style.width = PIXEL_SIZE + 'px';
             row.appendChild(cell);
         }
         container.appendChild(row);
     }
 }
 render();
-document.addEventListener('keypress', () => {
-    algo = (algo + 1) % 3;
+function update() {
+    algo = (algo + 1) % 4;
     render();
-})
-// console.log(window.innerWidth + ' ' + window.innerHeight);
-// console.log(window.outerWidth + ' ' + window.outerHeight);
+}
+
+document.addEventListener('keypress', update);
+document.addEventListener('click', update);
